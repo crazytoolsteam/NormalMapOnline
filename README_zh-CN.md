@@ -53,6 +53,7 @@ npx http-server -p 8000
 
 欢迎查看我独立开发的其它应用：
 
+*   **[CrazyTools.online](https://crazytools.online)** - 独立研发的专业级Web图形应用与在线工具平台。
 *   **[Soulmate 3D](https://soulmate3d.com)** - 一张照片生成逼真的3D数字人。只需10秒音频即可克隆真实声音，体验与挚爱之人的亲密对话。
     
     ![Soulmate 3D Screenshot](public/screenshot_soulmate3d.jpg)
