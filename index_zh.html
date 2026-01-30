@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NormalMap Online - 在线法线贴图生成器 (Normal Map, Roughness, AO)</title>
+    <meta name="description"
+        content="免费在线 Normal Map Generator。在浏览器中直接制作高质量 Normal Map (法线)、Roughness (粗糙度) 和 AO Map (环境光遮蔽)。无需下载。">
+    <meta name="keywords"
+        content="Normal Map, Roughness Map, Ambient Occlusion Map, 法线贴图生成器, 粗糙度贴图, AO贴图, PBR材质生成, normal map generator">
+    <!-- Canonical URL avoids duplicate content issues -->
+    <link rel="canonical" href="https://normalmap.org/index_zh.html" />
+    <!-- Hreflang tags tell search engines about language variations -->
+    <link rel="alternate" hreflang="en" href="https://normalmap.org/index.html" />
+    <link rel="alternate" hreflang="zh-CN" href="https://normalmap.org/index_zh.html" />
+    <link rel="alternate" hreflang="x-default" href="https://normalmap.org/index.html" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://normalmap.org/index_zh.html">
+    <meta property="og:title" content="NormalMap Online - Free Normal Map, Roughness & AO Map Generator">
+    <meta property="og:description"
+        content="免费在线 Normal Map Generator。在浏览器中直接制作高质量 Normal Map (法线)、Roughness (粗糙度) 和 AO Map (环境光遮蔽)。">
+    <meta property="og:image" content="https://normalmap.org/public/main.jpg">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://normalmap.org/index_zh.html">
+    <meta property="twitter:title" content="NormalMap Online - Free Normal Map, Roughness & AO Map Generator">
+    <meta property="twitter:description"
+        content="免费在线 Normal Map Generator。在浏览器中直接制作高质量 Normal Map (法线)、Roughness (粗糙度) 和 AO Map (环境光遮蔽)。">
+    <meta property="twitter:image" content="https://normalmap.org/public/main.jpg">
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "在线法线贴图生成器",
+      "url": "https://normalmap.org/index_zh.html",
+      "image": "https://normalmap.org/public/main.jpg",
+      "description": "免费在线工具，用于从单张图片生成PBR材质（法线、高度、粗糙度、AO等）。",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "Any",
+      "inLanguage": "zh-CN",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "featureList": "法线贴图生成, 高度图生成, PBR材质制作, 浏览器本地处理"
+    }
+    </script>
+
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles-uv.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+    <!-- Google AdSense 广告代码占位符 -->
+    <!-- 
+    1. 访问 Google AdSense (https://adsense.google.com/)
+    2. 获取您的验证代码 (通常以 <script async src="... 开头)
+    3. 将代码粘贴到此处
+    4. 提示：对于此类交互式工具，建议使用固定的展示广告单元，避免自动广告干扰操作。
+    -->
+    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_ID_HERE" crossorigin="anonymous"></script> -->
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo">
+                <span class="logo-icon">🎨</span>
+                <h1>在线法线贴图生成器</h1>
+            </div>
+            <div class="header-controls">
+
+                <div style="width: 10px; display: inline-block;"></div>
+                <div class="dropdown">
+                    <a href="#" class="dropdown-btn" style="text-decoration: none; color: white;">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            style="vertical-align: middle; position: relative; top: -1px; margin-right: 4px;">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="2" y1="12" x2="22" y2="12"></line>
+                            <path
+                                d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
+                            </path>
+                        </svg>
+                        语言
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            style="margin-left: 4px; opacity: 0.7;">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </a>
+                    <div class="dropdown-content">
+                        <a href="index.html">English</a>
+                        <a href="index_zh.html">简体中文</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Grid -->
+        <main class="app-main">
+
+            <!-- Left Column: Input & Actions -->
+            <aside class="sidebar-left">
+                <!-- Upload Section -->
+                <div class="panel upload-panel">
+                    <div class="panel-header">
+                        <h3>输入源</h3>
+                    </div>
+                    <div class="upload-area" id="uploadArea">
+                        <input type="file" id="fileInput" accept="image/*" hidden>
+                        <div class="upload-placeholder">
+                            <span class="icon">📁</span>
+                            <p>点击或拖拽上传</p>
+                        </div>
+                        <div class="source-preview" id="previewContainer" style="display: none;">
+                            <img id="sourcePreview" src="" alt="Source">
+                            <button class="btn-close" id="clearSourceBtn">×</button>
+                        </div>
+                    </div>
+                    <div class="sample-images">
+                        <span>示例:</span>
+                        <img src="public/example01.jpg" data-src="public/example01.jpg" class="sample-thumb" alt="示例 1"
+                            title="点击使用示例 1">
+                        <img src="public/example02.jpg" data-src="public/example02.jpg" class="sample-thumb" alt="示例 2"
+                            title="点击使用示例 2">
+                    </div>
+                </div>
+
+                <!-- Batch Actions -->
+                <div class="panel actions-panel">
+                    <div class="panel-header">
+                        <h3>操作</h3>
+                    </div>
+                    <div class="action-buttons">
+                        <div class="btn-group single-line">
+                            <button class="btn btn-secondary" id="downloadAllBtn" title="打包下载">
+                                <span class="icon">📦</span> 下载
+                            </button>
+                            <button class="btn btn-secondary" id="clearAllBtn" title="清空">
+                                <span class="icon">🗑️</span> 清空
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats -->
+                <div class="panel stats-panel">
+                    <div class="stat-row">
+                        <span>尺寸:</span>
+                        <span id="processSize" class="mono">-</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>耗时:</span>
+                        <span id="processTime" class="mono">-</span>
+                    </div>
+                </div>
+
+            </aside>
+
+            <!-- Center Column: 3D Viewport -->
+            <section class="viewport-center">
+                <div class="viewport-container">
+                    <canvas id="previewCanvas"></canvas>
+
+                    <!-- Map Tuning Bar -->
+                    <div class="map-tuning-bar">
+                        <button class="btn-tune" data-target="diffuse" title="漫反射 Diffuse">漫反射</button>
+                        <button class="btn-tune" data-target="height" title="高度 Height">高度</button>
+                        <button class="btn-tune" data-target="normal" title="法线 Normal">法线</button>
+                        <button class="btn-tune" data-target="metallic" title="金属度 Metallic">金属度</button>
+                        <button class="btn-tune" data-target="roughness" title="粗糙度 Roughness">粗糙度</button>
+                        <button class="btn-tune" data-target="ao" title="环境光遮蔽 AO">AO</button>
+                        <button class="btn-tune" data-target="edge" title="边缘 Edge">边缘</button>
+                        <span id="tuningHint" class="tuning-hint" style="display: none;">
+                            👈 点击按钮调节更多参数
+                        </span>
+                    </div>
+
+                    <!-- Map Tuning Popup -->
+                    <div class="tuning-popup" id="tuningPopup" style="display: none;">
+                        <div class="tuning-header">
+                            <h4 id="tuningTitle">设置</h4>
+                            <button class="btn-close-tiny" id="closeTuningBtn">×</button>
+                        </div>
+                        <div class="tuning-body" id="tuningControls">
+                            <!-- Sliders will be injected here -->
+                        </div>
+                    </div>
+
+                    <!-- Viewport Overlays -->
+                    <div class="viewport-controls-overlay">
+                        <div class="control-group">
+                            <label>模型</label>
+                            <select id="meshSelect">
+                                <option value="sphere">球体</option>
+                                <option value="cube">立方体</option>
+                                <option value="plane">平面</option>
+                                <option value="cylinder">圆柱体</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label>环境</label>
+                            <select id="envSelect">
+                                <option value="hdr01">HDR 1 (摄影棚)</option>
+                                <option value="hdr02">HDR 2 (户外)</option>
+                                <option value="hdr03">HDR 3 (室内)</option>
+                                <option value="custom">自定义...</option>
+                            </select>
+                            <input type="file" id="hdrFileInput" accept=".hdr,.exr" hidden>
+                            <button class="btn-icon-tiny" id="uploadHdrBtn" title="上传HDR">📤</button>
+                        </div>
+                        <div class="control-group">
+                            <label>UV</label>
+                            <div class="uv-inputs">
+                                <div class="uv-input-group">
+                                    <span>U</span>
+                                    <input type="range" id="uvScaleU" min="1" max="10" step="0.1" value="1"
+                                        title="U Tiling">
+                                    <input type="number" id="uvScaleUInput" class="value-input" value="1.0" step="0.1"
+                                        min="0.1" max="20">
+                                </div>
+                                <div class="uv-input-group">
+                                    <span>V</span>
+                                    <input type="range" id="uvScaleV" min="1" max="10" step="0.1" value="1"
+                                        title="V Tiling">
+                                    <input type="number" id="uvScaleVInput" class="value-input" value="1.0" step="0.1"
+                                        min="0.1" max="20">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Toast (Moved inside viewport for correct centering) -->
+                    <div class="toast" id="toast"></div>
+                </div>
+            </section>
+
+            <!-- Right Column: Maps Grid -->
+            <aside class="sidebar-right">
+                <div class="maps-grid-container">
+                    <!-- Height -->
+                    <div class="map-card compact" data-map-type="height">
+                        <div class="map-header">
+                            <h4>高度图 Height</h4>
+                            <div class="map-tools">
+                                <button class="btn-tiny" data-action="generate">🔄</button>
+                            </div>
+                        </div>
+                        <div class="map-body">
+                            <canvas class="map-canvas" data-canvas="height"></canvas>
+                            <div class="map-actions-overlay">
+                                <button class="btn-icon" data-action="preview">🔍</button>
+                                <button class="btn-icon" data-action="download">💾</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Normal -->
+                    <div class="map-card compact" data-map-type="normal">
+                        <div class="map-header">
+                            <h4>法线图 Normal</h4>
+                            <div class="map-tools">
+                                <button class="btn-tiny" data-action="generate">🔄</button>
+                            </div>
+                        </div>
+                        <div class="map-body">
+                            <canvas class="map-canvas" data-canvas="normal"></canvas>
+                            <div class="map-actions-overlay">
+                                <button class="btn-icon" data-action="preview">🔍</button>
+                                <button class="btn-icon" data-action="download">💾</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Diffuse -->
+                    <div class="map-card compact" data-map-type="diffuse">
+                        <div class="map-header">
+                            <h4>漫反射 Diffuse</h4>
+                            <div class="map-tools">
+                                <button class="btn-tiny" data-action="edit">🖌️</button>
+                            </div>
+                        </div>
+                        <div class="map-body">
+                            <canvas class="map-canvas" data-canvas="diffuse"></canvas>
+                            <div class="map-actions-overlay">
+                                <button class="btn-icon" data-action="preview">👁️</button>
+                                <button class="btn-icon" data-action="download">💾</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Metallic -->
+                    <div class="map-card compact" data-map-type="metallic">
+                        <div class="map-header">
+                            <h4>金属度 Metallic</h4>
+                            <div class="map-tools">
+                                <button class="btn-tiny" data-action="generate">🔄</button>
+                            </div>
+                        </div>
+                        <div class="map-body">
+                            <canvas class="map-canvas" data-canvas="metallic"></canvas>
+                            <div class="map-actions-overlay">
+                                <button class="btn-icon" data-action="preview">👁️</button>
+                                <button class="btn-icon" data-action="download">💾</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Roughness -->
+                    <div class="map-card compact" data-map-type="roughness">
+                        <div class="map-header">
+                            <h4>粗糙度 Roughness</h4>
+                            <div class="map-tools">
+                                <button class="btn-tiny" data-action="generate">🔄</button>
+                            </div>
+                        </div>
+                        <div class="map-body">
+                            <canvas class="map-canvas" data-canvas="roughness"></canvas>
+                            <div class="map-actions-overlay">
+                                <button class="btn-icon" data-action="preview">👁️</button>
+                                <button class="btn-icon" data-action="download">💾</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AO -->
+                    <div class="map-card compact" data-map-type="ao">
+                        <div class="map-header">
+                            <h4>环境光遮蔽 AO</h4>
+                            <div class="map-tools">
+                                <button class="btn-tiny" data-action="generate">🔄</button>
+                            </div>
+                        </div>
+                        <div class="map-body">
+                            <canvas class="map-canvas" data-canvas="ao"></canvas>
+                            <div class="map-actions-overlay">
+                                <button class="btn-icon" data-action="preview">👁️</button>
+                                <button class="btn-icon" data-action="download">💾</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Edge -->
+                    <div class="map-card compact" data-map-type="edge">
+                        <div class="map-header">
+                            <h4>边缘检测 Edge</h4>
+                            <div class="map-tools">
+                                <button class="btn-tiny" data-action="generate">🔄</button>
+                            </div>
+                        </div>
+                        <div class="map-body">
+                            <canvas class="map-canvas" data-canvas="edge"></canvas>
+                            <div class="map-actions-overlay">
+                                <button class="btn-icon" data-action="preview">👁️</button>
+                                <button class="btn-icon" data-action="download">💾</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Combined -->
+                    <div class="map-card compact" data-map-type="combined">
+                        <div class="map-header">
+                            <h4>组合贴图 ORM</h4>
+                            <div class="map-tools">
+                                <button class="btn-tiny" data-action="generate">🔄</button>
+                            </div>
+                        </div>
+                        <div class="map-body">
+                            <canvas class="map-canvas" data-canvas="combined"></canvas>
+                            <div class="map-actions-overlay">
+                                <button class="btn-icon" data-action="preview">👁️</button>
+                                <button class="btn-icon" data-action="download">💾</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+    </div>
+
+    <!-- SEO Footer -->
+    <footer class="app-footer"
+        style="background: #050505; color: #a1a1aa; padding: 40px 20px; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 40px;">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; margin-bottom: 30px;">
+                <div style="text-align: left;">
+
+                </div>
+            </div>
+            <p style="font-size: 0.9em;">&copy; 2024 NormalMap Online. 免费在线法线贴图生成器.</p>
+        </div>
+    </footer>
+
+    <!-- 隐藏图片用于SEO抓取 (Hidden image for SEO) -->
+    <img src="public/main.jpg" alt="在线法线贴图生成器 - 将颜色贴图转换为法线贴图、粗糙度、金属度和AO等PBR材质套图"
+        style="position: absolute; left: -9999px; opacity: 0;">
+
+    <!-- Image Preview Modal -->
+    <div class="image-preview-modal" id="imagePreviewModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="previewTitle">预览</h3>
+                <button class="btn-close-modal" id="closePreviewBtn">×</button>
+            </div>
+            <div class="modal-body">
+                <img id="fullPreviewImage" src="" alt="Full Preview">
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+        <div class="loading-spinner"></div>
+        <p id="loadingText">处理中...</p>
+    </div>
+
+
+
+    <!-- Scripts -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.182.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.182.0/examples/jsm/"
+            }
+        }
+    </script>
+    <script src="js/utils.js?v=2.0.0"></script>
+    <script src="js/shaders.js?v=2.0.0"></script>
+    <script src="js/imageProcessor.js?v=2.0.0"></script>
+    <script type="module" src="js/renderer3d.js?v=2.0.0"></script>
+    <script src="js/app.js?v=2.0.0"></script>
+    <!-- Product Hunt Badge -->
+    <div style="position: fixed; bottom: 20px; left: 20px; z-index: 9999;">
+        <a href="https://www.producthunt.com/products/normalmap-online?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-normalmap-online"
+            target="_blank" rel="noopener noreferrer"><img
+                alt="NormalMap Online - PBR texture generator in browser. Free &amp; Private. | Product Hunt"
+                width="250" height="54"
+                src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1069844&amp;theme=light&amp;t=1769696276529"></a>
+    </div>
+</body>
+
+</html>

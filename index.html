@@ -1,0 +1,454 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NormalMap Online - Free Normal Map, Roughness & Generator</title>
+    <meta name="description"
+        content="FREE Online Normal Map Generator. Create high-quality Normal, Roughness, Metallic & AO maps directly in your browser. No download required.">
+    <meta name="keywords"
+        content="Normal Map, Normalmap, Roughness Map, Ambient Occlusion Map, Metallic Map, Normal Map Generator, Online, PBR texture generator">
+    <!-- Canonical URL avoids duplicate content issues -->
+    <link rel="canonical" href="https://normalmap.org/index.html" />
+    <!-- Hreflang tags tell search engines about language variations -->
+    <link rel="alternate" hreflang="en" href="https://normalmap.org/index.html" />
+    <link rel="alternate" hreflang="zh-CN" href="https://normalmap.org/index_zh.html" />
+    <link rel="alternate" hreflang="x-default" href="https://normalmap.org/index.html" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://normalmap.org/">
+    <meta property="og:title" content="NormalMap Online - Free Normal Map, Roughness & AO Map Generator">
+    <meta property="og:description"
+        content="FREE Online Normal Map Generator. Create high-quality Normal, Roughness, Metallic & AO maps directly in your browser.">
+    <meta property="og:image" content="https://normalmap.org/public/main.jpg">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://normalmap.org/">
+    <meta property="twitter:title" content="NormalMap Online - Free Normal Map, Roughness & AO Map Generator">
+    <meta property="twitter:description"
+        content="FREE Online Normal Map Generator. Create high-quality Normal, Roughness, Metallic & AO maps directly in your browser.">
+    <meta property="twitter:image" content="https://normalmap.org/public/main.jpg">
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Online Normal Map Generator",
+      "url": "https://normalmap.org/",
+      "image": "https://normalmap.org/public/main.jpg",
+      "description": "Free online tool to generate PBR textures (Normal, Height, Roughness, AO) from a single image.",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "featureList": "Normal Map Generation, Height Map Generation, PBR Texture Creation, Browser-based Processing"
+    }
+    </script>
+
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles-uv.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+    <!-- Google AdSense Placeholder -->
+    <!-- 
+    1. Go to Google AdSense (https://adsense.google.com/)
+    2. Get your verification code (starts with <script async src="...>)
+    3. Paste it here
+    4. Important: For an interactive web app like this, Auto Ads might be intrusive.
+       Consider using fixed Display Units.
+    -->
+    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_ID_HERE" crossorigin="anonymous"></script> -->
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo">
+                <span class="logo-icon">🎨</span>
+                <h1>Online Normal Map Generator</h1>
+            </div>
+            <div class="header-controls">
+
+                <div style="width: 10px; display: inline-block;"></div>
+                <div class="dropdown">
+                    <a href="#" class="dropdown-btn" style="text-decoration: none; color: white;">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            style="vertical-align: middle; position: relative; top: -1px; margin-right: 4px;">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="2" y1="12" x2="22" y2="12"></line>
+                            <path
+                                d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
+                            </path>
+                        </svg>
+                        Language
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            style="margin-left: 4px; opacity: 0.7;">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </a>
+                    <div class="dropdown-content">
+                        <a href="index.html">English</a>
+                        <a href="index_zh.html">简体中文</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Grid -->
+        <main class="app-main">
+
+            <!-- Left Column: Input & Actions -->
+            <aside class="sidebar-left">
+                <!-- Upload Section -->
+                <div class="panel upload-panel">
+                    <div class="panel-header">
+                        <h3>Source Input</h3>
+                    </div>
+                    <div class="upload-area" id="uploadArea">
+                        <input type="file" id="fileInput" accept="image/*" hidden>
+                        <div class="upload-placeholder">
+                            <span class="icon">📁</span>
+                            <p>Click or Drag to Upload</p>
+                        </div>
+                        <div class="source-preview" id="previewContainer" style="display: none;">
+                            <img id="sourcePreview" src="" alt="Source">
+                            <button class="btn-close" id="clearSourceBtn">×</button>
+                        </div>
+                    </div>
+                    <div class="sample-images">
+                        <span>Samples:</span>
+                        <img src="public/example01.jpg" data-src="public/example01.jpg" class="sample-thumb"
+                            alt="Example 1" title="Click to use Example 1">
+                        <img src="public/example02.jpg" data-src="public/example02.jpg" class="sample-thumb"
+                            alt="Example 2" title="Click to use Example 2">
+                    </div>
+                </div>
+
+                <!-- Batch Actions -->
+                <div class="panel actions-panel">
+                    <div class="panel-header">
+                        <h3>Actions</h3>
+                    </div>
+                    <div class="action-buttons">
+                        <div class="btn-group single-line">
+                            <button class="btn btn-secondary" id="downloadAllBtn" title="Download All">
+                                <span class="icon">📦</span> Download
+                            </button>
+                            <button class="btn btn-secondary" id="clearAllBtn" title="Clear All">
+                                <span class="icon">🗑️</span> Clear
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats -->
+                <div class="panel stats-panel">
+                    <div class="stat-row">
+                        <span>Size:</span>
+                        <span id="processSize" class="mono">-</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Time:</span>
+                        <span id="processTime" class="mono">-</span>
+                    </div>
+                </div>
+
+            </aside>
+
+            <!-- Center Column: 3D Viewport -->
+            <section class="viewport-center">
+                <div class="viewport-container">
+                    <canvas id="previewCanvas"></canvas>
+
+                    <!-- Map Tuning Bar -->
+                    <div class="map-tuning-bar">
+                        <button class="btn-tune" data-target="diffuse" title="Diffuse">DIFFUSE</button>
+                        <button class="btn-tune" data-target="height" title="Height">HEIGHT</button>
+                        <button class="btn-tune" data-target="normal" title="Normal">NORMAL</button>
+                        <button class="btn-tune" data-target="metallic" title="Metallic">METALLIC</button>
+                        <button class="btn-tune" data-target="roughness" title="Roughness">ROUGHNESS</button>
+                        <button class="btn-tune" data-target="ao" title="Ambient Occlusion">AO</button>
+                        <button class="btn-tune" data-target="edge" title="Edge">EDGE</button>
+                        <span id="tuningHint" class="tuning-hint" style="display: none;">
+                            👈 Click buttons to tune
+                        </span>
+                    </div>
+
+                    <!-- Map Tuning Popup -->
+                    <div class="tuning-popup" id="tuningPopup" style="display: none;">
+                        <div class="tuning-header">
+                            <h4 id="tuningTitle">Settings</h4>
+                            <button class="btn-close-tiny" id="closeTuningBtn">×</button>
+                        </div>
+                        <div class="tuning-body" id="tuningControls">
+                            <!-- Sliders will be injected here -->
+                        </div>
+                    </div>
+
+                    <!-- Viewport Overlays -->
+                    <div class="viewport-controls-overlay">
+                        <div class="control-group">
+                            <label>Model</label>
+                            <select id="meshSelect">
+                                <option value="sphere">Sphere</option>
+                                <option value="cube">Cube</option>
+                                <option value="plane">Plane</option>
+                                <option value="cylinder">Cylinder</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label>Env</label>
+                            <select id="envSelect">
+                                <option value="hdr01">HDR 1 (Studio)</option>
+                                <option value="hdr02">HDR 2 (Outdoor)</option>
+                                <option value="hdr03">HDR 3 (Interior)</option>
+                                <option value="custom">Custom...</option>
+                            </select>
+                            <input type="file" id="hdrFileInput" accept=".hdr,.exr" hidden>
+                            <button class="btn-icon-tiny" id="uploadHdrBtn" title="Upload HDR">📤</button>
+                        </div>
+                        <div class="control-group">
+                            <label>UV</label>
+                            <div class="uv-inputs">
+                                <div class="uv-input-group">
+                                    <span>U</span>
+                                    <input type="range" id="uvScaleU" min="1" max="10" step="0.1" value="1"
+                                        title="U Tiling">
+                                    <input type="number" id="uvScaleUInput" class="value-input" value="1.0" step="0.1"
+                                        min="0.1" max="20">
+                                </div>
+                                <div class="uv-input-group">
+                                    <span>V</span>
+                                    <input type="range" id="uvScaleV" min="1" max="10" step="0.1" value="1"
+                                        title="V Tiling">
+                                    <input type="number" id="uvScaleVInput" class="value-input" value="1.0" step="0.1"
+                                        min="0.1" max="20">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Toast (Moved inside viewport for correct centering) -->
+                    <div class="toast" id="toast"></div>
+                </div>
+            </section>
+
+            <!-- Right Column: Maps Grid -->
+            <aside class="sidebar-right">
+                <div class="maps-grid-container">
+                    <!-- Height -->
+                    <div class="map-card compact" data-map-type="height">
+                        <div class="map-header">
+                            <h4>Height Map</h4>
+                            <div class="map-tools">
+                                <button class="btn-tiny" data-action="generate">🔄</button>
+                            </div>
+                        </div>
+                        <div class="map-body">
+                            <canvas class="map-canvas" data-canvas="height"></canvas>
+                            <div class="map-actions-overlay">
+                                <button class="btn-icon" data-action="preview">🔍</button>
+                                <button class="btn-icon" data-action="download">💾</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Normal -->
+                    <div class="map-card compact" data-map-type="normal">
+                        <div class="map-header">
+                            <h4>Normal Map</h4>
+                            <div class="map-tools">
+                                <button class="btn-tiny" data-action="generate">🔄</button>
+                            </div>
+                        </div>
+                        <div class="map-body">
+                            <canvas class="map-canvas" data-canvas="normal"></canvas>
+                            <div class="map-actions-overlay">
+                                <button class="btn-icon" data-action="preview">🔍</button>
+                                <button class="btn-icon" data-action="download">💾</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Diffuse -->
+                    <div class="map-card compact" data-map-type="diffuse">
+                        <div class="map-header">
+                            <h4>Diffuse Map</h4>
+                            <div class="map-tools">
+                                <button class="btn-tiny" data-action="edit">🖌️</button>
+                            </div>
+                        </div>
+                        <div class="map-body">
+                            <canvas class="map-canvas" data-canvas="diffuse"></canvas>
+                            <div class="map-actions-overlay">
+                                <button class="btn-icon" data-action="preview">👁️</button>
+                                <button class="btn-icon" data-action="download">💾</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Metallic -->
+                    <div class="map-card compact" data-map-type="metallic">
+                        <div class="map-header">
+                            <h4>Metallic Map</h4>
+                            <div class="map-tools">
+                                <button class="btn-tiny" data-action="generate">🔄</button>
+                            </div>
+                        </div>
+                        <div class="map-body">
+                            <canvas class="map-canvas" data-canvas="metallic"></canvas>
+                            <div class="map-actions-overlay">
+                                <button class="btn-icon" data-action="preview">👁️</button>
+                                <button class="btn-icon" data-action="download">💾</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Roughness -->
+                    <div class="map-card compact" data-map-type="roughness">
+                        <div class="map-header">
+                            <h4>Roughness Map</h4>
+                            <div class="map-tools">
+                                <button class="btn-tiny" data-action="generate">🔄</button>
+                            </div>
+                        </div>
+                        <div class="map-body">
+                            <canvas class="map-canvas" data-canvas="roughness"></canvas>
+                            <div class="map-actions-overlay">
+                                <button class="btn-icon" data-action="preview">👁️</button>
+                                <button class="btn-icon" data-action="download">💾</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AO -->
+                    <div class="map-card compact" data-map-type="ao">
+                        <div class="map-header">
+                            <h4>Ambient Occlusion</h4>
+                            <div class="map-tools">
+                                <button class="btn-tiny" data-action="generate">🔄</button>
+                            </div>
+                        </div>
+                        <div class="map-body">
+                            <canvas class="map-canvas" data-canvas="ao"></canvas>
+                            <div class="map-actions-overlay">
+                                <button class="btn-icon" data-action="preview">👁️</button>
+                                <button class="btn-icon" data-action="download">💾</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Edge -->
+                    <div class="map-card compact" data-map-type="edge">
+                        <div class="map-header">
+                            <h4>Edge Map</h4>
+                            <div class="map-tools">
+                                <button class="btn-tiny" data-action="generate">🔄</button>
+                            </div>
+                        </div>
+                        <div class="map-body">
+                            <canvas class="map-canvas" data-canvas="edge"></canvas>
+                            <div class="map-actions-overlay">
+                                <button class="btn-icon" data-action="preview">👁️</button>
+                                <button class="btn-icon" data-action="download">💾</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Combined -->
+                    <div class="map-card compact" data-map-type="combined">
+                        <div class="map-header">
+                            <h4>ORM Combined</h4>
+                            <div class="map-tools">
+                                <button class="btn-tiny" data-action="generate">🔄</button>
+                            </div>
+                        </div>
+                        <div class="map-body">
+                            <canvas class="map-canvas" data-canvas="combined"></canvas>
+                            <div class="map-actions-overlay">
+                                <button class="btn-icon" data-action="preview">👁️</button>
+                                <button class="btn-icon" data-action="download">💾</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+    </div>
+
+    <!-- SEO Footer -->
+    <footer class="app-footer"
+        style="background: #050505; color: #a1a1aa; padding: 40px 20px; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 40px;">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; margin-bottom: 30px;">
+                <div style="text-align: left;">
+
+                </div>
+                <!-- Additional footer columns can go here -->
+            </div>
+            <p style="font-size: 0.9em;">&copy; 2024 NormalMap Online. Free PBR Texture Generator.</p>
+        </div>
+    </footer>
+
+    <!-- Hidden image for SEO/Google Crawling -->
+    <img src="public/main.jpg"
+        alt="NormalMap Online - Convert Color Map to Normal Map, Roughness, Metallic & AO (PBR Texture Generator)"
+        style="position: absolute; left: -9999px; opacity: 0;">
+
+    <!-- Image Preview Modal -->
+    <div class="image-preview-modal" id="imagePreviewModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="previewTitle">Preview</h3>
+                <button class="btn-close-modal" id="closePreviewBtn">×</button>
+            </div>
+            <div class="modal-body">
+                <img id="fullPreviewImage" src="" alt="Full Preview">
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+        <div class="loading-spinner"></div>
+        <p id="loadingText">Processing...</p>
+    </div>
+
+
+
+    <!-- Scripts -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.182.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.182.0/examples/jsm/"
+            }
+        }
+    </script>
+    <script src="js/utils.js?v=2.0.0"></script>
+    <script src="js/shaders.js?v=2.0.0"></script>
+    <script src="js/imageProcessor.js?v=2.0.0"></script>
+    <script type="module" src="js/renderer3d.js?v=2.0.0"></script>
+    <script src="js/app.js?v=2.0.0"></script>
+    <!-- Product Hunt Badge -->
+    <div style="position: fixed; bottom: 20px; left: 20px; z-index: 9999;">
+        <a href="https://www.producthunt.com/products/normalmap-online?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-normalmap-online"
+            target="_blank" rel="noopener noreferrer"><img
+                alt="NormalMap Online - PBR texture generator in browser. Free &amp; Private. | Product Hunt"
+                width="250" height="54"
+                src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1069844&amp;theme=light&amp;t=1769696276529"></a>
+    </div>
+</body>
+
+</html>
