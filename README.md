@@ -53,9 +53,10 @@ Use the "Live Server" extension: Right-click `index.html` -> "Open with Live Ser
 
 Check out my other independent applications:
 
+*   **[LayerSprite.com](https://layersprite.com)** - Free Online Photo Editor, PSD Viewer, Image Editing in Browser.
 *   **[CrazyTools.online](https://crazytools.online)** - Independently developed professional Web graphics and creation tools.
 *   **[Soulmate 3D](https://soulmate3d.com)** - Create a realistic 3D Digital Human from a single photo. Clone any voice from just 10 seconds of audio to experience talking to loved ones.
     
     ![Soulmate 3D Screenshot](public/screenshot_soulmate3d.jpg)
     
-*   **[LayerSprite.com](https://layersprite.com)** - Free Online Photo Editor, PSD Viewer, Image Editing in Browser.
+
