@@ -54,10 +54,12 @@ Use the "Live Server" extension: Right-click `index.html` -> "Open with Live Ser
 Check out my other independent applications:
 
 *   **[PhotoQuill.com](https://photoquill.com)** - Free Online Photo Editor, PSD Viewer, Image Editing in Browser.
+<img width="1920" height="959" alt="photoquill" src="https://github.com/user-attachments/assets/8a7dcb63-1270-4693-8911-638bd4ca3af4" />
+
 *   **[AIPhotoGenie.com](https://aiphotogenie.com)** - Free AI photo generator and AI image creator with FLUX, Seedream, and more. Create, edit, and review results in an immersive WebGPU 3D gallery.
 *   **[Soulmate 3D](https://soulmate3d.com)** - Create a realistic 3D Digital Human from a single photo. Clone any voice from just 10 seconds of audio to experience talking to loved ones.
-*   **[CrazyTools.online](https://crazytools.online)** - Independently developed professional Web graphics and creation tools.
-    
     ![Soulmate 3D Screenshot](public/screenshot_soulmate3d.jpg)
+
+*   **[CrazyTools.online](https://crazytools.online)** - Independently developed professional Web graphics and creation tools.
     
 
