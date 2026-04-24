@@ -58,7 +58,7 @@ Check out my other independent applications:
 
 *   **[AIPhotoGenie.com](https://aiphotogenie.com)** - Free AI photo generator and AI image creator with FLUX, Seedream, and more. Create, edit, and review results in an immersive WebGPU 3D gallery.
 *   **[Soulmate 3D](https://soulmate3d.com)** - Create a realistic 3D Digital Human from a single photo. Clone any voice from just 10 seconds of audio to experience talking to loved ones.
-    ![Soulmate 3D Screenshot](public/screenshot_soulmate3d.jpg)
+![Soulmate 3D Screenshot](public/screenshot_soulmate3d.jpg)
 
 *   **[CrazyTools.online](https://crazytools.online)** - Independently developed professional Web graphics and creation tools.
     
