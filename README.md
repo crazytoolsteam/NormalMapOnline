@@ -4,7 +4,7 @@
 
 An open-source, browser-based online tool for generating high-quality PBR texture maps from a single Diffuse map.
 
-🔗 **[Online Demo](https://normalmap.org/)**
+🔗 **[Online Demo](https://normalmap.ai/)**
 
 ![Online Normal Map Generator Screenshot](public/screenshot.jpg)
 
@@ -53,9 +53,10 @@ Use the "Live Server" extension: Right-click `index.html` -> "Open with Live Ser
 
 Check out my other independent applications:
 
-*   **[LayerSprite.com](https://layersprite.com)** - Free Online Photo Editor, PSD Viewer, Image Editing in Browser.
-*   **[CrazyTools.online](https://crazytools.online)** - Independently developed professional Web graphics and creation tools.
+*   **[PhotoQuill.com](https://photoquill.com)** - Free Online Photo Editor, PSD Viewer, Image Editing in Browser.
+*   **[AIPhotoGenie.com](https://aiphotogenie.com)** - Free AI photo generator and AI image creator with FLUX, Seedream, and more. Create, edit, and review results in an immersive WebGPU 3D gallery.
 *   **[Soulmate 3D](https://soulmate3d.com)** - Create a realistic 3D Digital Human from a single photo. Clone any voice from just 10 seconds of audio to experience talking to loved ones.
+*   **[CrazyTools.online](https://crazytools.online)** - Independently developed professional Web graphics and creation tools.
     
     ![Soulmate 3D Screenshot](public/screenshot_soulmate3d.jpg)
     
